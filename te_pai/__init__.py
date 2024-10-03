@@ -1,3 +1,4 @@
-from te_pai.hamil import Hamiltonian
-from te_pai.trotter import Trotter
+from .hamil import Hamiltonian
+from .trotter import Trotter
+from .sampling import resample
 import numpy as np
