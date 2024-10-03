@@ -34,13 +34,13 @@ To install `te_pai` locally from the source, follow these steps:
 Once installed, you can use the package in your Python scripts or notebooks.
 
 ```python
-from te_pai import Hamiltonian, Trotter, plot
-
-# Example: Initialize a Hamiltonian and perform Trotterization
-nq = 5  # Number of qubits
-hamil = Hamiltonian.spin_chain_hamil(nq)
-trotter = Trotter(hamil, nq, delta=np.pi / 4, time=1.0, steps=10, order=2)
-res = [resample(data) for data in trotter.run(10000)]
-mean, std = zip(*[(np.mean(y), np.std(y)) for y in y3])
-print(mean, std)
+(numQs, Δ, T, N, n_snapshot) = (7, np.pi / (2**6), 1, 2000, 10)
+hamil = Hamiltonian.spin_chain_hamil(numQs, freqs)
+trotter = Trotter(hamil, numQs, Δ, T, N, n_snapshot)
+print(trotter.expected_num_gates)
+print(trotter.overhead)
+res = [resample(data) for data in trotter.run(100)]
+mean, std = zip(*[(np.mean(y), np.std(y)) for y in res])
+# mean[-1] stores the mean value at T=1.
+print(mean[-1], std[-1])
 ```
