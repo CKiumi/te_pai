@@ -1,4 +1,4 @@
-# te_pai
+# TE_PAI
 
 ## Features
 
