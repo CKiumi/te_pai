@@ -27,12 +27,6 @@ class Hamiltonian:
         terms += [("Z", [k], lambda t, k=k: freqs[k]) for k in range(n)]
         return Hamiltonian(n, terms)
 
-    @staticmethod
-    def trsns_ising(n):
-        terms = [("ZZ", [k, (k + 1) % n], lambda t: 1) for k in range(n)]
-        terms += [("X", [k], lambda t: 0.2) for k in range(n)]
-        return Hamiltonian(n, terms)
-
     def get_term(self, t):
         return [(term[0], term[1], term[2](t)) for term in self.terms]
 

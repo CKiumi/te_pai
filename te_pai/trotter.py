@@ -2,9 +2,7 @@ from . import pai, sampling, simulator
 from functools import partial
 from dataclasses import dataclass
 import numpy as np
-from qiskit import QuantumCircuit
 import multiprocessing as mp
-import time
 from dataclasses import dataclass
 import numpy as np
 from scipy.stats import binom
@@ -46,23 +44,6 @@ class Trotter:
         data = [[2 * x / sn - 1, sn / 2 * val] for x, val in zip(x, pdf)]
         return zip(*data)
 
-    def gen_rand_cir(self, index, err=None):
-        (gates_arr, sign, sign_list, n) = ([], 1, [], int(self.N / self.n_snap))
-        for i, inde in enumerate(index):
-            if i % n == 0:
-                gates_arr.append([])
-                sign_list.append(sign)
-            for j, val in inde:
-                (pauli, ind, coef) = self.terms[i][j]
-                if val == 3:
-                    sign *= -1
-                    gates_arr[-1].append((pauli, np.pi, ind))
-                else:
-                    gates_arr[-1].append((pauli, np.sign(coef) * self.Δ, ind))
-        sign_list.append(sign)
-        data = simulator.get_probs(self.nq, gates_arr, self.n_snap, err)
-        return np.array([(sign_list[i] * self.gam_list[i], data[i]) for i in range(self.n_snap + 1)])  # type: ignore
-
     def lie_trotter(self, exact, err=None):
         N = self.N if exact else int(np.ceil(self.expected_num_gates / self.L))
         noisy = "_noisy" if err is not None else ""
@@ -84,48 +65,36 @@ class Trotter:
             data = pd.read_csv(filename).values
             return data[:, 0]
 
-    def get_single_rand_cir(self):
-        index = sampling.batch_sampling(np.array(self.probs), 1000)
-        cor_index = index[0]
-        for indexi in index:
-            for inde in indexi:
-                for j, val in inde:
-                    if val == 3 and sum(len(r) for r in indexi) < sum(
-                        len(r) for r in cor_index
-                    ):
-                        cor_index = indexi
-        circ = QuantumCircuit(self.nq)
-        for i, inde in enumerate(cor_index):
-            for j, val in inde:
-                (pauli, ind, coef) = self.terms[i][j]
-                if val == 3:
-                    circ.append(simulator.rgate(pauli, np.pi), ind)
-                else:
-                    circ.append(simulator.rgate(pauli, np.sign(coef) * self.Δ), ind)
-        circ.draw(output="mpl", fold=30).savefig(  # type: ignore
-            "fig/quantum_circuit.pdf", bbox_inches="tight"
-        )
-        return circ
-
-    def run(self, num_circuits, err=None):
-        filename = (
-            lambda i: f"data/pai_snap{'_noisy' if err is not None else ''}{str(i)}.csv"
-        )
+    # Main Algorithm for TE_PAI
+    def run_te_pai(self, num_circuits, err=None):
+        noisy = "_noisy" if err is not None else ""
+        filename = lambda i: f"data/pai_snap{noisy}{str(i)}.csv"
         if not os.path.exists(filename(0)):
             res = []
-            start = time.time()
             index = sampling.batch_sampling(np.array(self.probs), num_circuits)
-            end = time.time()
-            print("sampling time:", end - start)
-            start = time.time()
             res += mp.Pool(mp.cpu_count()).map(
                 partial(self.gen_rand_cir, err=err), index
             )
-            end = time.time()
             res = np.array(res).transpose(1, 0, 2)
-            print("time:", end - start)
             for i in range(self.n_snap + 1):
                 pd.DataFrame(res[i]).to_csv(filename(i), index=False)
             return res
         else:
             return [pd.read_csv(filename(i)).values for i in range(self.n_snap + 1)]
+
+    def gen_rand_cir(self, index, err=None):
+        (gates_arr, sign, sign_list, n) = ([], 1, [], int(self.N / self.n_snap))
+        for i, inde in enumerate(index):
+            if i % n == 0:
+                gates_arr.append([])
+                sign_list.append(sign)
+            for j, val in inde:
+                (pauli, ind, coef) = self.terms[i][j]
+                if val == 3:
+                    sign *= -1
+                    gates_arr[-1].append((pauli, np.pi, ind))
+                else:
+                    gates_arr[-1].append((pauli, np.sign(coef) * self.Δ, ind))
+        sign_list.append(sign)
+        data = simulator.get_probs(self.nq, gates_arr, self.n_snap, err)
+        return np.array([(sign_list[i] * self.gam_list[i], data[i]) for i in range(self.n_snap + 1)])  # type: ignore
