@@ -117,3 +117,5 @@ coverage.xml
 .env
 .env.*
 .envrc
+
+data

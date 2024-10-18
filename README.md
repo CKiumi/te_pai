@@ -39,7 +39,7 @@ hamil = Hamiltonian.spin_chain_hamil(numQs, freqs)
 trotter = Trotter(hamil, numQs, Δ, T, N, n_snapshot)
 print(trotter.expected_num_gates)
 print(trotter.overhead)
-res = [resample(data) for data in trotter.run(100)]
+res = [resample(data) for data in trotter.run_te_pai(100)]
 mean, std = zip(*[(np.mean(y), np.std(y)) for y in res])
 # mean[-1] stores the mean value at T=1.
 print(mean[-1], std[-1])
