@@ -1,6 +1,6 @@
-from qc.hamil import Hamiltonian
-from qc.te_pai import TE_PAI
-from qc.trotter import Trotter
+from te_pai_qc.hamil import Hamiltonian
+from te_pai_qc.te_pai import TE_PAI
+from te_pai_qc.trotter import Trotter
 import numpy as np
 
 if __name__ == "__main__":
