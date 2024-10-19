@@ -5,9 +5,6 @@ import numpy as np
 import multiprocessing as mp
 from dataclasses import dataclass
 import numpy as np
-from scipy.stats import binom
-import os
-import pandas as pd
 
 
 @dataclass
@@ -18,7 +15,7 @@ class TE_PAI:
         self.L = len(hamil)
         steps = np.linspace(0, T, N)
         angles = [[2 * np.abs(coef) * T / N for coef in hamil.coefs(t)] for t in steps]
-        self.gamma = np.prod([pai.gamma(angles[j], self.Δ) for j in N])
+        self.gamma = np.prod([pai.gamma(angles[j], self.Δ) for j in range(N)])
         self.probs = [pai.prob_list(angles[i], Δ) for i in range(N)]
         self.terms = [hamil.get_term(t) for t in steps]
         self.overhead = np.exp(2 * hamil.l1_norm(T) * np.tan(Δ / 2))
@@ -33,8 +30,14 @@ class TE_PAI:
         res = []
         index = sampling.batch_sampling(np.array(self.probs), num_circuits)
         res += mp.Pool(mp.cpu_count()).map(partial(self.gen_rand_cir, err=err), index)
-        print(res)
-        return np.array(res).transpose(1, 0, 2)
+        return np.mean(
+            np.array(
+                [
+                    sign * self.gamma * simulator.single_shot(self.nq, gates)
+                    for (sign, gates) in res
+                ]
+            )
+        )
 
     def gen_rand_cir(self, index, err=None):
         (gates, sign) = ([], 1)
@@ -43,7 +46,7 @@ class TE_PAI:
                 (pauli, ind, coef) = self.terms[i][j]
                 if val == 3:
                     sign *= -1
-                    gates[-1].append((pauli, np.pi, ind))
+                    gates.append((pauli, np.pi, ind))
                 else:
-                    gates[-1].append((pauli, np.sign(coef) * self.Δ, ind))
+                    gates.append((pauli, np.sign(coef) * self.Δ, ind))
         return (sign, gates)
