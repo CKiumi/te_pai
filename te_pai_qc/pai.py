@@ -2,7 +2,7 @@ import numpy as np
 
 
 def prob_list(angles, Δ):
-    probs = [abc(θ, np.sign(θ) * Δ) for θ in angles]
+    probs = [abc(θ, (1 if θ >= 0 else -1) * Δ) for θ in angles]
     return [list(np.abs(probs) / np.sum(np.abs(probs))) for probs in probs]
 
 
