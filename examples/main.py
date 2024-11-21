@@ -32,6 +32,6 @@ if __name__ == "__main__":
 
     # Use Lie Trotter to run the simulation
     trotter = Trotter(hamil, numQs, T, N, n_snapshot)
-    res = [2 * prob - 1 for prob in trotter.lie_trotter()]
+    res = [2 * prob - 1 for prob in trotter.run()]
     mean, std = zip(*[(np.mean(y), np.std(y)) for y in res])
     print("Means of Trotter result:", mean)

@@ -19,14 +19,14 @@ class Trotter:
         steps = np.linspace(0, T, N)
         self.terms = [hamil.get_term(t) for t in steps]
 
-    def get_lie_PDF(self, points=1000, exact=True):
+    def get_lie_PDF(self, points=1000):
         sn = 1000
         x = np.linspace(0, sn, points, dtype=int)
-        pdf = binom.pmf(x, sn, self.lie_trotter(exact)[10])
+        pdf = binom.pmf(x, sn, self.run()[-1])
         data = [[2 * x / sn - 1, sn / 2 * val] for x, val in zip(x, pdf)]
         return zip(*data)
 
-    def lie_trotter(self, err=None):
+    def run(self, err=None):
         noisy = "_noisy" if err is not None else ""
         filename = f"data/lie/lie{self.N}_snap{noisy}_step{self.n_snap}.csv"
         gates_arr = []
