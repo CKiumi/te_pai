@@ -29,9 +29,11 @@ class TE_PAI:
         self.overhead = np.exp(2 * hamil.l1_norm(T) * np.tan(Δ / 2))
         self.expected_num_gates = ((3 - np.cos(Δ)) / np.sin(Δ)) * hamil.l1_norm(T)
         self.rea_expect_num_gates = 0
+        self.rea_var_num_gates = 0
         for prob in self.probs:
             for p in prob:
                 self.rea_expect_num_gates += 1 - p[0]
+                self.rea_var_num_gates += p[0] * (1 - p[0])
 
     def sample_num_gates(self, n):
         res = sampling.batch_sampling(np.array(self.probs), n)
