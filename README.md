@@ -2,36 +2,52 @@
 
 ## Features
 
-- Implement PAI based exact trotter simulation
+- Implements **PAI-based exact Trotter simulation** for quantum circuits, based on the paper "TE-PAI: Exact Time Evolution by Sampling Random Circuits" [📄 arXiv:2410.16850](https://arxiv.org/abs/2410.16850).
 
-## Installation
+---
 
-### Local Installation
+## 🚀 Run Examples
 
-To install `te_pai` locally from the source, follow these steps:
+To run the included example (`examples/main.py`) using [📚 Poetry](https://python-poetry.org/), follow these steps:
 
-1. Navigate to the project directory:
+1. **Install dependencies:**
 
    ```bash
-   cd te_pai
+   poetry install
    ```
 
-2. Install the package using `pip` in **editable** mode (recommended for development purposes):
+2. **Run the example script:**
+
+   ```bash
+   poetry run python examples/main.py
+   ```
+
+3. **(Optional)** Activate the shell environment:
+   ```bash
+   poetry shell
+   python examples/main.py
+   ```
+
+---
+
+## 📦 Installation
+
+### Install with `pip`
+
+1. Install in **editable** mode (recommended for development):
 
    ```bash
    pip install -e .
    ```
 
-   - The `-e` flag installs the package in "editable" mode, allowing you to make changes to the source code without reinstalling the package.
-
-3. (Optional) If you prefer to install without the `-e` flag for a regular installation:
+2. Or regular installation:
    ```bash
    pip install .
    ```
 
-## Usage
+## 🧪 Usage
 
-Once installed, you can use the package in your Python scripts or notebooks.
+Once installed, you can use the package in Python scripts or notebooks like so:
 
 ```python
 from te_pai.hamil import Hamiltonian
@@ -49,8 +65,8 @@ if __name__ == "__main__":
     n_snapshot = 10  # Number of snapshots
     rng = np.random.default_rng(0)
     freqs = rng.uniform(-1, 1, size=numQs)
+
     # Initialize Hamiltonian and Trotter simulation
-    # Assuming a spin chain Hamiltonian constructor
     hamil = Hamiltonian.spin_chain_hamil(numQs, freqs)
     te_pai = TE_PAI(hamil, numQs, Δ, T, N, n_snapshot)
 
@@ -60,7 +76,6 @@ if __name__ == "__main__":
 
     # Run the TE-PAI simulation and resample the results
     res = [resample(data) for data in te_pai.run_te_pai(10000)]
-    # Compute mean and standard deviation for the resampled data
     mean, std = zip(*[(np.mean(y), np.std(y)) for y in res])
 
     print("Means of TE-PAI result:", mean)
