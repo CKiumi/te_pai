@@ -98,5 +98,14 @@ If you're using [Poetry](https://python-poetry.org/):
 
 ```bash
 poetry install
-poetry run pytest -s
+poetry run pytest test/ -s
+```
+
+### ✅ Running Benchmarks
+
+If you're using [Poetry](https://python-poetry.org/):
+
+```bash
+poetry install
+poetry run pytest bench/
 ```
