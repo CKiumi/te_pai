@@ -87,3 +87,16 @@ if __name__ == "__main__":
     mean, std = zip(*[(np.mean(y), np.std(y)) for y in res])
     print("Means of Trotter result:", mean)
 ```
+
+## 🧪 Testing with `pytest`
+
+This project uses [`pytest`](https://docs.pytest.org/) for unit testing. All test files are located in the `tests/` directory.
+
+### ✅ Running Tests
+
+If you're using [Poetry](https://python-poetry.org/):
+
+```bash
+poetry install
+poetry run pytest -s
+```

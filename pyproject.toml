@@ -17,8 +17,6 @@ qiskit = "^2.0.0"
 qiskit-aer = "^0.17.0"
 
 
-[tool.poetry.dev-dependencies]
-
-[tool.poetry.group.dev.dependencies]
+[tool.poetry.group.test.dependencies]
 pytest = "^8.3.5"
 
