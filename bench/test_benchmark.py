@@ -1,10 +1,11 @@
 import numpy as np
-from te_pai.hamil import Hamiltonian
-import pytest
+from te_pai.sampling import sample_from_prob
 
 
-@pytest.mark.benchmark
-def test_spin_chain_benchmark(benchmark):
-    n = 6
-    freqs = np.ones(n)
-    benchmark(lambda: Hamiltonian.spin_chain_hamil(n, freqs))
+def test_sample_from_prob_benchmark(benchmark):
+    np.random.seed(0)
+    raw = np.random.rand(1000, 100, 3)
+    probs = raw / raw.sum(axis=2, keepdims=True)
+    # Warm-up JIT
+    sample_from_prob(probs)
+    _ = benchmark(sample_from_prob, probs)
