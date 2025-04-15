@@ -17,7 +17,6 @@ if __name__ == "__main__":
     # Assuming a spin chain Hamiltonian constructor
     hamil = Hamiltonian.spin_chain_hamil(numQs, freqs)
     te_pai = TE_PAI(hamil, numQs, Δ, T, N, n_snapshot)
-
     # Print expected number of gates and overhead
     print("Expected number of gates:", te_pai.expected_num_gates)
     print("Measurement overhead:", te_pai.overhead)
@@ -27,11 +26,10 @@ if __name__ == "__main__":
     # Compute mean and standard deviation for the resampled data
     mean, std = zip(*[(np.mean(y), np.std(y)) for y in res])
 
-    print("Means of TE-PAI result:", mean)
-    print("Standard deviations of TE-PAI result:", std)
-
+    print("Means of TE-PAI result:", [round(float(x), 3) for x in mean])
+    print("Standard deviations of TE-PAI result:", [round(float(x), 3) for x in std])
     # Use Lie Trotter to run the simulation
     trotter = Trotter(hamil, numQs, T, N, n_snapshot)
     res = [2 * prob - 1 for prob in trotter.run()]
     mean, std = zip(*[(np.mean(y), np.std(y)) for y in res])
-    print("Means of Trotter result:", mean)
+    print("Means of Trotter result:", [round(float(x), 3) for x in mean])

@@ -4,6 +4,7 @@ from qiskit import QuantumCircuit, transpile
 from qiskit_aer.noise import NoiseModel, depolarizing_error
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.circuit.library import RXXGate, RYYGate, RZZGate, RZGate, RXGate
+import numpy as np
 
 
 def rgate(pauli, r):
@@ -32,7 +33,8 @@ def get_probs(nq, gates_arr, n_snap, err=None):
     if err is None:
         sim = AerSimulator(method="statevector")
         data = sim.run(transpile(circ, sim)).result().data()
-        return [(data[str(i)] + 1) / 2 for i in range(n_snap + 1)]  # type: ignore
+        # Avoid prob > 1 < 0 due to numerical errors
+        return [np.clip((data[str(i)] + 1) / 2, 0, 1) for i in range(n_snap + 1)]  # type: ignore
     else:
         nm = NoiseModel()
         nm.add_all_qubit_quantum_error(depolarizing_error(err[0], 1), ["x", "z"])
@@ -41,4 +43,5 @@ def get_probs(nq, gates_arr, n_snap, err=None):
         )
         sim = AerSimulator(method="density_matrix", noise_model=nm)
         data = sim.run(transpile(circ, sim)).result().data()
-        return [(data[str(i)] + 1) / 2 for i in range(n_snap + 1)]  # type: ignore
+        # Avoid prob > 1 < 0 due to numerical errors
+        return [np.clip((data[str(i)] + 1) / 2, 0, 1) for i in range(n_snap + 1)]  # type: ignore
