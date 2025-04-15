@@ -92,7 +92,7 @@ If you're using [Poetry](https://python-poetry.org/):
 
 ```bash
 poetry install
-poetry run pytest test/ -s
+poetry run pytest -s
 ```
 
 ### ✅ Running Benchmarks
@@ -101,5 +101,5 @@ If you're using [Poetry](https://python-poetry.org/):
 
 ```bash
 poetry install
-poetry run pytest bench/
+poetry run pytest test/benchmark.py
 ```
