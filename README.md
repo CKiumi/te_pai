@@ -22,12 +22,6 @@ To run the included example (`examples/main.py`) using [📚 Poetry](https://pyt
    poetry run python examples/main.py
    ```
 
-3. **(Optional)** Activate the shell environment:
-   ```bash
-   poetry shell
-   python examples/main.py
-   ```
-
 ---
 
 ## 📦 Installation
