@@ -8,19 +8,21 @@
 
 ## 🚀 Run Examples
 
-To run the included example (`examples/main.py`) using [📚 Poetry](https://python-poetry.org/), follow these steps:
+To run the included example (`examples/main.py`) using **uv**, follow these steps:
 
-1. **Install dependencies:**
+1. **Sync dependencies:**
 
    ```bash
-   poetry install
+   uv sync
    ```
 
 2. **Run the example script:**
 
    ```bash
-   poetry run python examples/main.py
+   uv run python examples/main.py
    ```
+
+([github.com](https://github.com/astral-sh/uv/issues/10813?utm_source=chatgpt.com))
 
 ---
 
@@ -39,67 +41,34 @@ To run the included example (`examples/main.py`) using [📚 Poetry](https://pyt
    pip install .
    ```
 
-## 🧪 Usage
+### Development mode with **uv**
 
-Once installed, you can use the package in Python scripts or notebooks like so:
+To install the package in editable mode and manage dependencies with **uv**:
 
-```python
-from te_pai.hamil import Hamiltonian
-from te_pai.trotter import Trotter
-from te_pai.te_pai import TE_PAI
-from te_pai.sampling import resample
-import numpy as np
-
-if __name__ == "__main__":
-    # Parameters for the example
-    numQs = 7  # Number of qubits
-    Δ = np.pi / (2**6)  # Delta parameter
-    T = 1  # Total evolution time
-    N = 2000  # Number of Trotter steps
-    n_snapshot = 10  # Number of snapshots
-    rng = np.random.default_rng(0)
-    freqs = rng.uniform(-1, 1, size=numQs)
-
-    # Initialize Hamiltonian and Trotter simulation
-    hamil = Hamiltonian.spin_chain_hamil(numQs, freqs)
-    te_pai = TE_PAI(hamil, numQs, Δ, T, N, n_snapshot)
-
-    # Print expected number of gates and overhead
-    print("Expected number of gates:", te_pai.expected_num_gates)
-    print("Measurement overhead:", te_pai.overhead)
-
-    # Run the TE-PAI simulation and resample the results
-    res = [resample(data) for data in te_pai.run_te_pai(10000)]
-    mean, std = zip(*[(np.mean(y), np.std(y)) for y in res])
-
-    print("Means of TE-PAI result:", mean)
-    print("Standard deviations of TE-PAI result:", std)
-
-    # Use Lie Trotter to run the simulation
-    trotter = Trotter(hamil, numQs, T, N, n_snapshot)
-    res = [2 * prob - 1 for prob in trotter.run()]
-    mean, std = zip(*[(np.mean(y), np.std(y)) for y in res])
-    print("Means of Trotter result:", mean)
+```bash
+uv tool install . -e
 ```
+
+---
 
 ## 🧪 Testing with `pytest`
 
-This project uses [`pytest`](https://docs.pytest.org/) for unit testing. All test files are located in the `tests/` directory.
+All test files are located in the `tests/` directory.
 
-### ✅ Running Tests
+1. **Sync dependencies (including any extras):**
 
-If you're using [Poetry](https://python-poetry.org/):
+   ```bash
+   uv sync --all-extras
+   ```
 
-```bash
-poetry install
-poetry run pytest -s
-```
+2. **Run tests:**
+
+   ```bash
+   uv run pytest -s
+   ```
 
 ### ✅ Running Benchmarks
 
-If you're using [Poetry](https://python-poetry.org/):
-
 ```bash
-poetry install
-poetry run pytest test/benchmark.py
+uv run pytest test/benchmark.py
 ```
