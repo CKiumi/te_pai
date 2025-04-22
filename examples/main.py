@@ -1,8 +1,9 @@
-from te_pai.hamil import Hamiltonian
-from te_pai.trotter import Trotter
-from te_pai.te_pai import TE_PAI
-from te_pai.sampling import resample
 import numpy as np
+
+from te_pai.hamil import Hamiltonian
+from te_pai.sampling import resample
+from te_pai.te_pai import TE_PAI
+from te_pai.trotter import Trotter
 
 if __name__ == "__main__":
     # Parameters for the example
@@ -24,12 +25,12 @@ if __name__ == "__main__":
     # Run the TE-PAI simulation and resample the results
     res = [resample(data) for data in te_pai.run_te_pai(10000)]
     # Compute mean and standard deviation for the resampled data
-    mean, std = zip(*[(np.mean(y), np.std(y)) for y in res])
+    mean, std = zip(*[(np.mean(y), np.std(y)) for y in res], strict=False)
 
     print("Means of TE-PAI result:", [round(float(x), 3) for x in mean])
     print("Standard deviations of TE-PAI result:", [round(float(x), 3) for x in std])
     # Use Lie Trotter to run the simulation
     trotter = Trotter(hamil, numQs, T, N, n_snapshot)
     res = [2 * prob - 1 for prob in trotter.run()]
-    mean, std = zip(*[(np.mean(y), np.std(y)) for y in res])
+    mean, std = zip(*[(np.mean(y), np.std(y)) for y in res], strict=False)
     print("Means of Trotter result:", [round(float(x), 3) for x in mean])

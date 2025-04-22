@@ -1,18 +1,16 @@
-from . import pai, sampling, simulator
-from functools import partial
-from dataclasses import dataclass
-import numpy as np
 import multiprocessing as mp
-from dataclasses import dataclass
-import numpy as np
-from scipy.stats import binom
 import os
+from dataclasses import dataclass
+from functools import partial
+
+import numpy as np
 import pandas as pd
+
+from . import pai, sampling, simulator
 
 
 @dataclass
 class TE_PAI:
-
     def __init__(self, hamil, numQs, Δ, T, N, n_snap):
         (self.nq, self.n_snap, self.Δ, self.T, self.N) = (numQs, n_snap, Δ, T, N)
         self.L = len(hamil)
@@ -71,4 +69,6 @@ class TE_PAI:
                     gates_arr[-1].append((pauli, np.sign(coef) * self.Δ, ind))
         sign_list.append(sign)
         data = simulator.get_probs(self.nq, gates_arr, self.n_snap, err)
-        return np.array([(sign_list[i] * self.gam_list[i], data[i]) for i in range(self.n_snap + 1)])  # type: ignore
+        return np.array(
+            [(sign_list[i] * self.gam_list[i], data[i]) for i in range(self.n_snap + 1)]
+        )  # type: ignore

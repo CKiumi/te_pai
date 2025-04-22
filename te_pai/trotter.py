@@ -1,18 +1,15 @@
-from . import pai, sampling, simulator
-from functools import partial
-from dataclasses import dataclass
-import numpy as np
-import multiprocessing as mp
-from dataclasses import dataclass
-import numpy as np
-from scipy.stats import binom
 import os
+from dataclasses import dataclass
+
+import numpy as np
 import pandas as pd
+from scipy.stats import binom
+
+from . import simulator
 
 
 @dataclass
 class Trotter:
-
     def __init__(self, hamil, numQs, T, N, n_snap):
         (self.nq, self.n_snap, self.T, self.N) = (numQs, n_snap, T, N)
         self.L = len(hamil)
@@ -23,8 +20,8 @@ class Trotter:
         sn = 1000
         x = np.linspace(0, sn, points, dtype=int)
         pdf = binom.pmf(x, sn, self.run()[-1])
-        data = [[2 * x / sn - 1, sn / 2 * val] for x, val in zip(x, pdf)]
-        return zip(*data)
+        data = [[2 * x / sn - 1, sn / 2 * val] for x, val in zip(x, pdf, strict=False)]
+        return zip(*data, strict=False)
 
     def run(self, err=None):
         noisy = "_noisy" if err is not None else ""

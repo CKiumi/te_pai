@@ -1,10 +1,9 @@
-from qiskit import QuantumCircuit
-from qiskit_aer import AerSimulator
-from qiskit import QuantumCircuit, transpile
-from qiskit_aer.noise import NoiseModel, depolarizing_error
-from qiskit.quantum_info import SparsePauliOp
-from qiskit.circuit.library import RXXGate, RYYGate, RZZGate, RZGate, RXGate
 import numpy as np
+from qiskit import QuantumCircuit, transpile
+from qiskit.circuit.library import RXGate, RXXGate, RYYGate, RZGate, RZZGate
+from qiskit.quantum_info import SparsePauliOp
+from qiskit_aer import AerSimulator
+from qiskit_aer.noise import NoiseModel, depolarizing_error
 
 
 def rgate(pauli, r):

@@ -18,13 +18,46 @@ dependencies = [
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[dependency-groups]
-test = ["pytest>=8.3.5,<9"]
-bench = ["pytest-benchmark>=5.1.0,<6"]
-
 [tool.uv]
-default-groups = [
-    "test",
-    "bench",
+dev-dependencies = [
+  "pytest>=8.3.5,<9",
+  "pytest-benchmark>=5.1.0,<6",
+  "ruff>=0.11.6",
 ]
+
+# uvの記述は省略 ...
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+
+
+ignore = [
+    "E501",  # line too long, handled by black
+    "E731",
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+    "W191",  # indentation contains tabs
+    "B904", # raise ... from ... になっていない場合のエラーを無視
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+
+
+[tool.ruff.lint.isort]
+known-third-party = ["fastapi", "pydantic", "starlette"]
+
+[tool.ruff.lint.pyupgrade]
+keep-runtime-typing = true
 

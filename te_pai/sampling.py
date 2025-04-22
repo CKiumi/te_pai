@@ -1,6 +1,7 @@
-from numba import jit
-import numpy as np
 import multiprocessing as mp
+
+import numpy as np
+from numba import jit
 from scipy.stats import binom
 
 

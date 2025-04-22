@@ -1,15 +1,15 @@
+from collections.abc import Callable
 from dataclasses import dataclass
 from itertools import product
+
 import numpy as np
 from scipy import integrate
-from typing import Callable, List, Tuple
-from itertools import product
 
 
 @dataclass
 class Hamiltonian:
     nqubits: int
-    terms: List[Tuple[str, List[int], Callable[[float], float]]]
+    terms: list[tuple[str, list[int], Callable[[float], float]]]
 
     def __post_init__(self):
         print("The number of qubit:" + str(self.nqubits))
