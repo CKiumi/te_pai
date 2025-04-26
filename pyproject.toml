@@ -6,7 +6,7 @@ authors = [{ name = "Author Name", email = "author@example.com" }]
 requires-python = "~=3.10"
 license = "MIT"
 dependencies = [
-    "numpy>=2.2.4,<3",
+    "numpy>=2.2.5",
     "scipy>=1.15.2,<2",
     "qiskit>=2.0.0,<3",
     "qiskit-aer>=0.17.0,<0.18",
@@ -48,7 +48,7 @@ ignore = [
     "B008",  # do not perform function calls in argument defaults
     "C901",  # too complex
     "W191",  # indentation contains tabs
-    "B904", # raise ... from ... になっていない場合のエラーを無視
+    "B904", # raise ... from ... 
 ]
 
 [tool.ruff.lint.per-file-ignores]
