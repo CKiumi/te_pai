@@ -1,4 +1,5 @@
 import numpy as np
+
 from te_pai.sampling import sample_from_prob
 
 
