@@ -6,12 +6,13 @@ authors = [{ name = "Author Name", email = "author@example.com" }]
 requires-python = "~=3.10"
 license = "MIT"
 dependencies = [
-    "numpy>=2.2.5",
+    "numpy>=2.2.5,<3",
     "scipy>=1.15.2,<2",
     "qiskit>=2.0.0,<3",
     "qiskit-aer>=0.17.0,<0.18",
     "numba>=0.61.2,<0.62",
     "pandas>=2.2.3,<3",
+    "qulacs>=0.6.11",
 ]
 
 [build-system]
@@ -22,7 +23,7 @@ build-backend = "setuptools.build_meta"
 dev-dependencies = [
   "pytest>=8.3.5,<9",
   "pytest-benchmark>=5.1.0,<6",
-  "ruff>=0.11.6",
+  "ruff>=0.11.7",
 ]
 
 # uvの記述は省略 ...

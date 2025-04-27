@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 
 from te_pai.hamil import Hamiltonian
@@ -6,12 +8,14 @@ from te_pai.te_pai import TE_PAI
 from te_pai.trotter import Trotter
 
 if __name__ == "__main__":
+    start = time.time()
     # Parameters for the example
     numQs = 7  # Number of qubits
     Δ = np.pi / (2**6)  # Delta parameter
     T = 1  # Total evolution time
     N = 2000  # Number of Trotter steps
     n_snapshot = 10  # Number of snapshots
+    np.random.seed(42)
     rng = np.random.default_rng(0)
     freqs = rng.uniform(-1, 1, size=numQs)
     # Initialize Hamiltonian and Trotter simulation
@@ -23,7 +27,9 @@ if __name__ == "__main__":
     print("Measurement overhead:", te_pai.overhead)
 
     # Run the TE-PAI simulation and resample the results
-    res = [resample(data) for data in te_pai.run_te_pai(10000)]
+    res = [resample(data) for data in te_pai.run_te_pai(1000)]
+    end = time.time()
+    print("Time taken:", end - start)
     # Compute mean and standard deviation for the resampled data
     mean, std = zip(*[(np.mean(y), np.std(y)) for y in res], strict=False)
 

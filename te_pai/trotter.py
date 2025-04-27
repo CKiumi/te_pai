@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import binom
 
-from . import simulator
+from .backend import Simulator
 
 
 @dataclass
@@ -36,7 +36,9 @@ class Trotter:
                     (pauli, 2 * coef * self.T / self.N, ind)
                     for (pauli, ind, coef) in self.terms[i]
                 ]
-            res = simulator.get_probs(self.nq, gates_arr, self.n_snap, err=err)
+            res = Simulator("qulacs").get_probs(
+                self.nq, gates_arr, self.n_snap, err=err
+            )
             pd.DataFrame(res).to_csv(filename, index=False)
             return res
         else:

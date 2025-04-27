@@ -21,7 +21,6 @@ def save_x_sv(circ: QuantumCircuit, id):
 
 
 def get_probs(nq, gates_arr, n_snap, err=None):
-    # We set the initial state to the plus state
     circ = QuantumCircuit(nq)
     circ.h(range(nq))
     save_x_sv(circ, 0)

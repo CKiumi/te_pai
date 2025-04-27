@@ -6,7 +6,8 @@ from functools import partial
 import numpy as np
 import pandas as pd
 
-from . import pai, sampling, simulator
+from . import pai, sampling
+from .backend import Simulator
 
 
 @dataclass
@@ -44,9 +45,7 @@ class TE_PAI:
         if not os.path.exists(filename(0)):
             res = []
             index = sampling.batch_sampling(np.array(self.probs), num_circuits)
-            res += mp.Pool(mp.cpu_count()).map(
-                partial(self.gen_rand_cir, err=err), index
-            )
+            res += mp.Pool(1).map(partial(self.gen_rand_cir, err=err), index)
             res = np.array(res).transpose(1, 0, 2)
             for i in range(self.n_snap + 1):
                 pd.DataFrame(res[i]).to_csv(filename(i), index=False)
@@ -68,7 +67,7 @@ class TE_PAI:
                 else:
                     gates_arr[-1].append((pauli, np.sign(coef) * self.Δ, ind))
         sign_list.append(sign)
-        data = simulator.get_probs(self.nq, gates_arr, self.n_snap, err)
+        data = Simulator("qulacs").get_probs(self.nq, gates_arr, self.n_snap, err)
         return np.array(
             [(sign_list[i] * self.gam_list[i], data[i]) for i in range(self.n_snap + 1)]
         )  # type: ignore
