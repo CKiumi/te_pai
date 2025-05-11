@@ -16,9 +16,10 @@ class Hamiltonian:
         print("Number of terms in the Hamiltonian:" + str(len(self.terms)))
 
     @staticmethod
-    def spin_chain_hamil(n, freqs):
+    def spin_chain_hamil(n, freqs, coef):
+
         def J(t):
-            return np.cos(20 * t * np.pi)
+            return np.cos(coef * t * np.pi)
 
         terms = [
             (gate, [k, (k + 1) % n], J)

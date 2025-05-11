@@ -45,7 +45,9 @@ class TE_PAI:
         if not os.path.exists(filename(0)):
             res = []
             index = sampling.batch_sampling(np.array(self.probs), num_circuits)
-            res += mp.Pool(1).map(partial(self.gen_rand_cir, err=err), index)
+            res += mp.Pool(mp.cpu_count()).map(
+                partial(self.gen_rand_cir, err=err), index
+            )
             res = np.array(res).transpose(1, 0, 2)
             for i in range(self.n_snap + 1):
                 pd.DataFrame(res[i]).to_csv(filename(i), index=False)

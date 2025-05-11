@@ -20,7 +20,7 @@ if __name__ == "__main__":
     freqs = rng.uniform(-1, 1, size=numQs)
     # Initialize Hamiltonian and Trotter simulation
     # Assuming a spin chain Hamiltonian constructor
-    hamil = Hamiltonian.spin_chain_hamil(numQs, freqs)
+    hamil = Hamiltonian.spin_chain_hamil(numQs, freqs, 20)
     te_pai = TE_PAI(hamil, numQs, Δ, T, N, n_snapshot)
     # Print expected number of gates and overhead
     print("Expected number of gates:", te_pai.expected_num_gates)
