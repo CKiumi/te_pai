@@ -1,10 +1,8 @@
 import multiprocessing as mp
-import os
 from dataclasses import dataclass
 from functools import partial
 
 import numpy as np
-import pandas as pd
 
 from . import pai, sampling
 from .backend import Simulator
@@ -40,20 +38,10 @@ class TE_PAI:
 
     # Main Algorithm for TE_PAI
     def run_te_pai(self, num_circuits, err=None):
-        noisy = "_noisy" if err is not None else ""
-        filename = lambda i: f"data/pai_snap{noisy}{str(i)}.csv"
-        if not os.path.exists(filename(0)):
-            res = []
-            index = sampling.batch_sampling(np.array(self.probs), num_circuits)
-            res += mp.Pool(mp.cpu_count()).map(
-                partial(self.gen_rand_cir, err=err), index
-            )
-            res = np.array(res).transpose(1, 0, 2)
-            for i in range(self.n_snap + 1):
-                pd.DataFrame(res[i]).to_csv(filename(i), index=False)
-            return res
-        else:
-            return [pd.read_csv(filename(i)).values for i in range(self.n_snap + 1)]
+        res = []
+        index = sampling.batch_sampling(np.array(self.probs), num_circuits)
+        res += mp.Pool(mp.cpu_count()).map(partial(self.gen_rand_cir, err=err), index)
+        return np.array(res).transpose(1, 0, 2)
 
     def gen_rand_cir(self, index, err=None):
         (gates_arr, sign, sign_list, n) = ([], 1, [], int(self.N / self.n_snap))
