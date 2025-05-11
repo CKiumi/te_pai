@@ -1,8 +1,6 @@
-import os
 from dataclasses import dataclass
 
 import numpy as np
-import pandas as pd
 from scipy.stats import binom
 
 from .backend import Simulator
@@ -24,23 +22,13 @@ class Trotter:
         return zip(*data, strict=False)
 
     def run(self, err=None):
-        noisy = "_noisy" if err is not None else ""
-        filename = f"data/lie/lie{self.N}_snap{noisy}_step{self.n_snap}.csv"
         gates_arr = []
-        if not os.path.exists(filename):
-            n = int(self.N / self.n_snap)
-            for i in range(self.N):
-                if i % n == 0:
-                    gates_arr.append([])
-                gates_arr[-1] += [
-                    (pauli, 2 * coef * self.T / self.N, ind)
-                    for (pauli, ind, coef) in self.terms[i]
-                ]
-            res = Simulator("qulacs").get_probs(
-                self.nq, gates_arr, self.n_snap, err=err
-            )
-            pd.DataFrame(res).to_csv(filename, index=False)
-            return res
-        else:
-            data = pd.read_csv(filename).values
-            return data[:, 0]
+        n = int(self.N / self.n_snap)
+        for i in range(self.N):
+            if i % n == 0:
+                gates_arr.append([])
+            gates_arr[-1] += [
+                (pauli, 2 * coef * self.T / self.N, ind)
+                for (pauli, ind, coef) in self.terms[i]
+            ]
+        return Simulator("qulacs").get_probs(self.nq, gates_arr, self.n_snap, err=err)
