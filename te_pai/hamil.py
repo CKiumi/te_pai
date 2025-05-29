@@ -17,7 +17,6 @@ class Hamiltonian:
 
     @staticmethod
     def spin_chain_hamil(n, freqs, coef):
-
         def J(t):
             return np.cos(coef * t * np.pi)
 

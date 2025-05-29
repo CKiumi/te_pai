@@ -11,7 +11,7 @@ class Trotter:
     def __init__(self, hamil, numQs, T, N, n_snap):
         (self.nq, self.n_snap, self.T, self.N) = (numQs, n_snap, T, N)
         self.L = len(hamil)
-        steps = np.linspace(0, T, N + 1)
+        steps = np.linspace(0, T, N + 1)[1:]
         self.terms = [hamil.get_term(t) for t in steps]
 
     def get_lie_PDF(self, points=1000):
