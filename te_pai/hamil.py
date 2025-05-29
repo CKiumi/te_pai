@@ -34,9 +34,9 @@ class Hamiltonian:
     def coefs(self, t: float):
         return [term[2](t) for term in self.terms]
 
-    def l1_norm(self, T: float):
+    def l1_norm(self, T: float, limit: int = 100) -> float:
         fn = lambda t: np.linalg.norm(self.coefs(t), 1)
-        return integrate.quad(fn, 0, T, limit=100)[0]
+        return integrate.quad(fn, 0, T, limit=limit)[0]
 
     def __len__(self):
         return len(self.terms)
