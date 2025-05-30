@@ -1,5 +1,5 @@
 import numpy as np
-from qulacs import DensityMatrix, Observable, QuantumCircuit, QuantumState
+from qulacs import DensityMatrix, QuantumCircuit, QuantumState
 from qulacs.gate import (
     RX,
     RZ,
@@ -20,20 +20,14 @@ def rgate(q, pauli, r):
         }[pauli]
 
 
-def save_x_sv(state: QuantumState | DensityMatrix):
-    obs = Observable(1)
-    obs.add_operator(1.0, "X 0")
-    return obs.get_expectation_value(state)
-
-
-def get_probs(nq, gates_arr, err=None):
+def get_probs(nq, gates_arr, obs, err=None):
     state = QuantumState(nq) if err is None else DensityMatrix(nq)
     probs = []
     circ = QuantumCircuit(nq)
     for i in range(nq):
         circ.add_H_gate(i)
     circ.update_quantum_state(state)
-    probs.append(np.clip((save_x_sv(state) + 1) / 2, 0, 1))
+    probs.append(np.clip((obs.get_expectation_value(state) + 1) / 2, 0, 1))
     for _, gates in enumerate(gates_arr):
         circ = QuantumCircuit(nq)
         for pauli, coef, qubits in gates:
@@ -46,5 +40,5 @@ def get_probs(nq, gates_arr, err=None):
                         TwoQubitDepolarizingNoise(qubits[0], qubits[1], err[1])
                     )
         circ.update_quantum_state(state)
-        probs.append(np.clip((save_x_sv(state) + 1) / 2, 0, 1))
+        probs.append(np.clip((obs.get_expectation_value(state) + 1) / 2, 0, 1))
     return probs

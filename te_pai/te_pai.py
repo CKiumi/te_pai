@@ -4,13 +4,14 @@ from functools import partial
 
 import numpy as np
 
-from . import pai, sampling
+from . import Observable, pai, sampling
 from .backend import Simulator
 
 
 @dataclass
 class TE_PAI:
     def __init__(self, hamil, numQs, Δ, T, N, n_snap, simulator="qulacs"):
+        self.observable = Observable(numQs, [(1, [("X", 0)])])
         (self.nq, self.n_snap, self.Δ, self.T, self.N) = (numQs, n_snap, Δ, T, N)
         self.simulator = simulator
         self.L = len(hamil)
@@ -58,7 +59,7 @@ class TE_PAI:
                 else:
                     gates_arr[-1].append((pauli, np.sign(coef) * self.Δ, ind))
         sign_list.append(sign)
-        data = Simulator("qulacs").get_probs(self.nq, gates_arr, err)
+        data = Simulator("qulacs").get_probs(self.nq, gates_arr, self.observable, err)
         return np.array(
             [(sign_list[i] * self.gam_list[i], data[i]) for i in range(self.n_snap + 1)]
         )  # type: ignore
