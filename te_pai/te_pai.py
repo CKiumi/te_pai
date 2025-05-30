@@ -10,8 +10,9 @@ from .backend import Simulator
 
 @dataclass
 class TE_PAI:
-    def __init__(self, hamil, numQs, Δ, T, N, n_snap):
+    def __init__(self, hamil, numQs, Δ, T, N, n_snap, simulator="qulacs"):
         (self.nq, self.n_snap, self.Δ, self.T, self.N) = (numQs, n_snap, Δ, T, N)
+        self.simulator = simulator
         self.L = len(hamil)
         steps = np.linspace(0, T, N)
         angles = [[2 * np.abs(coef) * T / N for coef in hamil.coefs(t)] for t in steps]
@@ -57,7 +58,7 @@ class TE_PAI:
                 else:
                     gates_arr[-1].append((pauli, np.sign(coef) * self.Δ, ind))
         sign_list.append(sign)
-        data = Simulator("qulacs").get_probs(self.nq, gates_arr, self.n_snap, err)
+        data = Simulator("qulacs").get_probs(self.nq, gates_arr, err)
         return np.array(
             [(sign_list[i] * self.gam_list[i], data[i]) for i in range(self.n_snap + 1)]
         )  # type: ignore

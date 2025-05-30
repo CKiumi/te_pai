@@ -8,7 +8,8 @@ from .backend import Simulator
 
 @dataclass
 class Trotter:
-    def __init__(self, hamil, numQs, T, N, n_snap):
+    def __init__(self, hamil, numQs, T, N, n_snap, simulator="qulacs"):
+        self.simulator = simulator
         (self.nq, self.n_snap, self.T, self.N) = (numQs, n_snap, T, N)
         self.L = len(hamil)
         steps = np.linspace(0, T, N + 1)[1:]
@@ -31,4 +32,4 @@ class Trotter:
                 (pauli, 2 * coef * self.T / self.N, ind)
                 for (pauli, ind, coef) in self.terms[i]
             ]
-        return Simulator("qulacs").get_probs(self.nq, gates_arr, self.n_snap, err=err)
+        return Simulator("qulacs").get_probs(self.nq, gates_arr, err=err)

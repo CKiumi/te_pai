@@ -20,7 +20,7 @@ def save_x_sv(circ: QuantumCircuit, id):
     circ.save_expectation_value(SparsePauliOp(["X"]), [0], str(id))  # type: ignore
 
 
-def get_probs(nq, gates_arr, n_snap, err=None):
+def get_probs(nq, gates_arr, err=None):
     circ = QuantumCircuit(nq)
     circ.h(range(nq))
     save_x_sv(circ, 0)
@@ -32,7 +32,7 @@ def get_probs(nq, gates_arr, n_snap, err=None):
         sim = AerSimulator(method="statevector")
         data = sim.run(transpile(circ, sim)).result().data()
         # Avoid prob > 1 < 0 due to numerical errors
-        return [np.clip((data[str(i)] + 1) / 2, 0, 1) for i in range(n_snap + 1)]  # type: ignore
+        return [np.clip((data[str(i)] + 1) / 2, 0, 1) for i in range(len(gates_arr) + 1)]  # type: ignore
     else:
         nm = NoiseModel()
         nm.add_all_qubit_quantum_error(depolarizing_error(err[0], 1), ["x", "z"])
@@ -42,4 +42,4 @@ def get_probs(nq, gates_arr, n_snap, err=None):
         sim = AerSimulator(method="density_matrix", noise_model=nm)
         data = sim.run(transpile(circ, sim)).result().data()
         # Avoid prob > 1 < 0 due to numerical errors
-        return [np.clip((data[str(i)] + 1) / 2, 0, 1) for i in range(n_snap + 1)]  # type: ignore
+        return [np.clip((data[str(i)] + 1) / 2, 0, 1) for i in range(len(gates_arr) + 1)]  # type: ignore
