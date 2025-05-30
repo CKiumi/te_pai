@@ -11,12 +11,12 @@ from qulacs.gate import (
 
 def rgate(q, pauli, r):
     if len(q) == 1:
-        return {"X": RX(q[0], r), "Z": RZ(q[0], r)}[pauli]
+        return {"X": RX(q[0], -r), "Z": RZ(q[0], -r)}[pauli]
     else:
         return {
-            "XX": PauliRotation(q, [1, 1], r),
-            "YY": PauliRotation(q, [2, 2], r),
-            "ZZ": PauliRotation(q, [3, 3], r),
+            "XX": PauliRotation(q, [1, 1], -r),
+            "YY": PauliRotation(q, [2, 2], -r),
+            "ZZ": PauliRotation(q, [3, 3], -r),
         }[pauli]
 
 

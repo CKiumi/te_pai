@@ -32,12 +32,11 @@ obs = Observable(nq, [(1, [("Y", 0)])])
 def test_backends():
     probs1 = Simulator("qulacs").get_probs(nq, gates_arr, obs, None)
     probs2 = Simulator("qiskit").get_probs(nq, gates_arr, obs, None)
-    print(probs1, probs2)
-    # assert np.allclose(probs1, probs2)
+    assert np.allclose(probs1, probs2)
 
 
 def test_backends_noisy():
     probs1 = Simulator("qulacs").get_probs(nq, gates_arr, obs, [0.01, 0.1])
     probs2 = Simulator("qiskit").get_probs(nq, gates_arr, obs, [0.01, 0.1])
     diffs = [np.abs(p1 - p2) for p1, p2 in zip(probs1, probs2, strict=False)]
-    # assert all(diff < 0.1 for diff in diffs), f"Differences too large: {diffs}"
+    assert all(diff < 0.1 for diff in diffs), f"Differences too large: {diffs}"
