@@ -1,8 +1,7 @@
 import numpy as np
 
-from te_pai.backend import (
-    Simulator,  # Replace 'your_module' with the actual module name
-)
+from te_pai import Observable
+from te_pai.backend import Simulator
 
 nq = 3
 gates_arr = [
@@ -27,15 +26,17 @@ gates_arr = [
     ],
 ]
 
+obs = Observable(nq, [(1, [("Y", 0)])])
+
 
 def test_backends():
-    probs1 = Simulator("qulacs").get_probs(nq, gates_arr, None)
-    probs2 = Simulator("qiskit").get_probs(nq, gates_arr, None)
+    probs1 = Simulator("qulacs").get_probs(nq, gates_arr, obs, None)
+    probs2 = Simulator("qiskit").get_probs(nq, gates_arr, obs, None)
     assert np.allclose(probs1, probs2)
 
 
 def test_backends_noisy():
-    probs1 = Simulator("qulacs").get_probs(nq, gates_arr, [0.01, 0.1])
-    probs2 = Simulator("qiskit").get_probs(nq, gates_arr, [0.01, 0.1])
+    probs1 = Simulator("qulacs").get_probs(nq, gates_arr, obs, [0.01, 0.1])
+    probs2 = Simulator("qiskit").get_probs(nq, gates_arr, obs, [0.01, 0.1])
     diffs = [np.abs(p1 - p2) for p1, p2 in zip(probs1, probs2, strict=False)]
     assert all(diff < 0.1 for diff in diffs), f"Differences too large: {diffs}"

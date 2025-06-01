@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import numpy as np
 from scipy.stats import binom
 
+from . import Observable
 from .backend import Simulator
 
 
@@ -22,7 +23,9 @@ class Trotter:
         data = [[2 * x / sn - 1, sn / 2 * val] for x, val in zip(x, pdf, strict=False)]
         return zip(*data, strict=False)
 
-    def run(self, err=None):
+    def run(self, obs=None, err=None):
+        if obs is None:
+            obs = Observable(self.nq, [(1, [("X", 0)])])
         gates_arr = []
         n = int(self.N / self.n_snap)
         for i in range(self.N):
@@ -32,4 +35,4 @@ class Trotter:
                 (pauli, 2 * coef * self.T / self.N, ind)
                 for (pauli, ind, coef) in self.terms[i]
             ]
-        return Simulator("qulacs").get_probs(self.nq, gates_arr, err=err)
+        return Simulator("qulacs").get_probs(self.nq, gates_arr, obs, err=err)

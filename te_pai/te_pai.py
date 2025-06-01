@@ -38,13 +38,15 @@ class TE_PAI:
         return [sum(len(r) for r in re) for re in res]
 
     # Main Algorithm for TE_PAI
-    def run_te_pai(self, num_circuits, err=None):
+    def run_te_pai(self, num_circuits, obs, err=None):
         res = []
         index = sampling.batch_sampling(np.array(self.probs), num_circuits)
-        res += mp.Pool(mp.cpu_count()).map(partial(self.gen_rand_cir, err=err), index)
+        res += mp.Pool(mp.cpu_count()).map(
+            partial(self.gen_rand_cir, obs=obs, err=err), index
+        )
         return np.array(res).transpose(1, 0, 2)
 
-    def gen_rand_cir(self, index, err=None):
+    def gen_rand_cir(self, index, obs, err=None):
         (gates_arr, sign, sign_list, n) = ([], 1, [], int(self.N / self.n_snap))
         for i, inde in enumerate(index):
             if i % n == 0:
@@ -58,7 +60,7 @@ class TE_PAI:
                 else:
                     gates_arr[-1].append((pauli, np.sign(coef) * self.Δ, ind))
         sign_list.append(sign)
-        data = Simulator("qulacs").get_probs(self.nq, gates_arr, err)
+        data = Simulator("qulacs").get_probs(self.nq, gates_arr, obs, err)
         return np.array(
             [(sign_list[i] * self.gam_list[i], data[i]) for i in range(self.n_snap + 1)]
         )  # type: ignore
