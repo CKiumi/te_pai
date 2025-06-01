@@ -27,7 +27,7 @@ def get_probs(nq, gates_arr, obs, err=None):
     for i in range(nq):
         circ.add_H_gate(i)
     circ.update_quantum_state(state)
-    probs.append(np.clip((obs.get_expectation_value(state) + 1) / 2, 0, 1))
+    probs.append(np.clip((obs.get_expectation_value(state).real + 1) / 2, 0, 1))
     for _, gates in enumerate(gates_arr):
         circ = QuantumCircuit(nq)
         for pauli, coef, qubits in gates:
@@ -40,5 +40,5 @@ def get_probs(nq, gates_arr, obs, err=None):
                         TwoQubitDepolarizingNoise(qubits[0], qubits[1], err[1])
                     )
         circ.update_quantum_state(state)
-        probs.append(np.clip((obs.get_expectation_value(state) + 1) / 2, 0, 1))
+        probs.append(np.clip((obs.get_expectation_value(state).real + 1) / 2, 0, 1))
     return probs

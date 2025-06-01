@@ -2,10 +2,7 @@ import time
 
 import numpy as np
 
-from te_pai.hamil import Hamiltonian
-from te_pai.sampling import resample
-from te_pai.te_pai import TE_PAI
-from te_pai.trotter import Trotter
+from te_pai import TE_PAI, Hamiltonian, Observable, Trotter, resample
 
 if __name__ == "__main__":
     start = time.time()
@@ -18,6 +15,7 @@ if __name__ == "__main__":
     np.random.seed(42)
     rng = np.random.default_rng(0)
     freqs = rng.uniform(-1, 1, size=numQs)
+    obs = Observable(numQs, [(1, [("X", 0)])])
     # Initialize Hamiltonian and Trotter simulation
     # Assuming a spin chain Hamiltonian constructor
     hamil = Hamiltonian.spin_chain_hamil(numQs, freqs, 20)
@@ -27,7 +25,7 @@ if __name__ == "__main__":
     print("Measurement overhead:", te_pai.overhead)
 
     # Run the TE-PAI simulation and resample the results
-    res = [resample(data) for data in te_pai.run_te_pai(1000)]
+    res = [resample(data) for data in te_pai.run_te_pai(1000, obs)]
     end = time.time()
     print("Time taken:", end - start)
     # Compute mean and standard deviation for the resampled data

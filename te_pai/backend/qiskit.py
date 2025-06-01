@@ -28,7 +28,8 @@ def get_probs(nq, gates_arr, obs, err=None):
         data = sim.run(transpile(circ, sim)).result().data()
         # Avoid prob > 1 < 0 due to numerical errors
         return [
-            np.clip((data[str(i)] + 1) / 2, 0, 1) for i in range(len(gates_arr) + 1)
+            np.clip((data[str(i)].real + 1) / 2, 0, 1)
+            for i in range(len(gates_arr) + 1)
         ]  # type: ignore
     else:
         nm = NoiseModel()
@@ -40,5 +41,6 @@ def get_probs(nq, gates_arr, obs, err=None):
         data = sim.run(transpile(circ, sim)).result().data()
         # Avoid prob > 1 < 0 due to numerical errors
         return [
-            np.clip((data[str(i)] + 1) / 2, 0, 1) for i in range(len(gates_arr) + 1)
+            np.clip((data[str(i)].real + 1) / 2, 0, 1)
+            for i in range(len(gates_arr) + 1)
         ]  # type: ignore
